@@ -1,6 +1,6 @@
 package mainWindow;
 
-import mainWindow.baseFrame.BaseFrame;
+import mainWindow.baseFrame.*;
 import requester.Requester;
 import table.MyTable;
 import table.VisibleTable;
@@ -14,11 +14,10 @@ public class MainWindow extends BaseFrame {
 
     public MainWindow(Requester requester) {
         super(JFrame.EXIT_ON_CLOSE, "Траты");
-        Toolkit toolkit = Toolkit.getDefaultToolkit();
-        Dimension dimension = toolkit.getScreenSize();
-        int startWidth = (dimension.width) / 2;
-        int startHeight = 4* (dimension.height) / 5;
-        setBounds((dimension.width - startWidth)/2, (dimension.height - startHeight)/2, startWidth, startHeight);
+        int startWidth = (MonitorSizes.WIDTH_OF_MONITOR) / 2;
+        int startHeight = 4* (MonitorSizes.HEIGHT_OF_MONITOR) / 5;
+        setBounds((MonitorSizes.WIDTH_OF_MONITOR - startWidth)/2, (MonitorSizes.HEIGHT_OF_MONITOR - startHeight)/2,
+                startWidth, startHeight);
         createButtons();
 
         String[] d = {"2","1","3","5"};
