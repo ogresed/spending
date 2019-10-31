@@ -1,4 +1,5 @@
 import dbConnectWindow.DBConnectWindow;
+import mainWindow.MainWindow;
 import requester.Requester;
 
 import java.util.Properties;
@@ -14,7 +15,7 @@ public class Main {
         properties.setProperty("password",password);
         properties.setProperty("characterEncoding",encoding);
         var requester = new Requester(URL, properties);*/
-        //new MainWindow(requester);
+        //new MainWindow();
         //new TableLoader("description/info");
         new DBConnectWindow();
     }

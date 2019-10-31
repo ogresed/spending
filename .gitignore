@@ -2,8 +2,9 @@
 settings
 spending.iml
 target/
-TO-DO
+td
 ..giti.swp
+control/*
 
 # Created by https://www.gitignore.io/api/intellij
 # Edit at https://www.gitignore.io/?templates=intellij

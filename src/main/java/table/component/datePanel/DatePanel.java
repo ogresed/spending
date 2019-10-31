@@ -1,6 +1,6 @@
 package table.component.datePanel;
 
-import table.component.MyComponent;
+import table.component.Fenced;
 
 import javax.swing.*;
 import java.time.MonthDay;
@@ -9,7 +9,7 @@ import java.util.Vector;
 
 import static java.time.Year.isLeap;
 
-public class DatePanel extends MyComponent {
+public class DatePanel extends Fenced {
     /**
      * modes
      * */

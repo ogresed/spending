@@ -1,5 +1,7 @@
 package dbConnectWindow.nfield;
 
+import table.component.Fenced;
+
 import javax.swing.*;
 
 public class NPasswordField extends Fenced implements NField {

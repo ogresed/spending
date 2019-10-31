@@ -1,5 +1,7 @@
 package dbConnectWindow.nfield;
 
+import table.component.Fenced;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.HashSet;

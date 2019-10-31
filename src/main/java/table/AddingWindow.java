@@ -1,13 +1,13 @@
 package table;
 
-import table.component.MyComponent;
+import table.component.Fenced;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class AddingWindow extends JFrame {
 
-    public AddingWindow(String name,  MyComponent[] components) {
+    public AddingWindow(String name,  Fenced[] components) {
         setTitle(name);
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         Dimension dimension = toolkit.getScreenSize();
@@ -18,7 +18,7 @@ public class AddingWindow extends JFrame {
         JScrollPane pane = new JScrollPane();
         add(pane);
         pane.setLayout(new GridLayout(components.length + 1, 1));
-        for(MyComponent component : components) {
+        for(Fenced component : components) {
             pane.add(component);
         }
 

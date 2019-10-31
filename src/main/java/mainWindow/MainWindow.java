@@ -1,16 +1,28 @@
 package mainWindow;
 
+
 import mainWindow.baseFrame.*;
 import requester.Requester;
-import table.MyTable;
 import table.VisibleTable;
+import table.VisibleTable2;
 
 import javax.swing.*;
-import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
 public class MainWindow extends BaseFrame {
     private Requester requester;
     private TablesList tablesList;
+    private ArrayList<VisibleTable2> tables = new ArrayList<>();
+
+    public MainWindow () {
+        super(JFrame.EXIT_ON_CLOSE, "Траты");
+        String[] wer = {"123", "234", "456456", "657","4568"};
+
+        add(new VisibleTable2("Str", new ArrayList<String>(Arrays.asList(wer))));
+        setVisible(true);
+    }
 
     public MainWindow(Requester requester) {
         super(JFrame.EXIT_ON_CLOSE, "Траты");
@@ -20,14 +32,21 @@ public class MainWindow extends BaseFrame {
                 startWidth, startHeight);
         createButtons();
 
-        String[] d = {"2","1","3","5"};
-        var table = new MyTable("spending", d);
-        var visibles = new VisibleTable(requester, table);
-        VisibleTable[] v = new VisibleTable[1];
-        v[0] = visibles;
-        tablesList = new TablesList(v);
+        var tablesAndAttributes =  requester.getMeta();
+        createTables(tablesAndAttributes);
 
         setVisible(true);
+    }
+
+    private void createTables(HashMap<String, ArrayList<String>> tablesAndAttributes) {
+        tablesAndAttributes.forEach((key, value) -> {
+            if(Character.isUpperCase( key.charAt(0))) {
+                var table = new VisibleTable2(key, value);
+                add(table);
+                tables.add(table);
+            }
+        });
+        tables.get(0).setVisible(true);
     }
 
     @Override

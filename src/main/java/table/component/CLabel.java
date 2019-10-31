@@ -2,7 +2,7 @@ package table.component;
 
 import javax.swing.*;
 
-public class CLabel extends MyComponent {
+public class CLabel extends Fenced {
     private JTextArea space;
 
     public CLabel(String name) {

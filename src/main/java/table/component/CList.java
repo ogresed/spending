@@ -2,7 +2,7 @@ package table.component;
 
 import javax.swing.*;
 
-public class CList extends MyComponent {
+public class CList extends Fenced {
     private JComboBox<String> box;
     private String[] names;
 

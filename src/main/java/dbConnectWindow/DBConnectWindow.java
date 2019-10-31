@@ -2,6 +2,8 @@ package dbConnectWindow;
 
 import dbConnectWindow.nfield.NPasswordField;
 import dbConnectWindow.nfield.NTextField;
+import logging.LoggingConst;
+import mainWindow.MainWindow;
 import mainWindow.baseFrame.MonitorSizes;
 import mainWindow.baseFrame.StatusBar;
 import requester.Requester;
@@ -17,8 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-public class DBConnectWindow extends JFrame {
-    private static final String WRONG_CONNECTION = "failed connect to db";
+public class DBConnectWindow extends JFrame implements LoggingConst {
     private static final String PATH_OF_SETTINGS = "users/user_settings";
     private HashSet<String> urlSet = new HashSet<>();
     private HashSet<String> userSet = new HashSet<>();
@@ -30,7 +31,6 @@ public class DBConnectWindow extends JFrame {
     private NTextField encodingPanel = new NTextField("encoding");
     private JPanel connectPanel;
     private StatusBar statusBar;
-    private static final String LOGGING_FILE_NAME = "control/log.properties";
     private static Logger logger;
 
     static {
@@ -70,7 +70,7 @@ public class DBConnectWindow extends JFrame {
         encodingPanel = new NTextField("encoding");
         JButton connectButton = new JButton("Connect");
 
-        connectButton.addActionListener(e -> toClickOnConnectBonnet());
+        connectButton.addActionListener(e -> toClickOnConnectButton());
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(connectButton);
         statusBar = new StatusBar(100, 16);
@@ -81,10 +81,12 @@ public class DBConnectWindow extends JFrame {
         connectPanel.add(statusBar, BorderLayout.SOUTH);
     }
 
-    private void toClickOnConnectBonnet() {
+    private void toClickOnConnectButton() {
         DataWrapper<Properties, String> data = getSettings();
+        Requester requester;
         try {
-            new Requester(data.getSecondObject(), data.getFirstObject());
+            requester = new Requester(data.getSecondObject(), data.getFirstObject());
+
         } catch (SQLException ex) {
             logger.log(Level.WARNING, "Database access error", ex);
             statusBar.setMessage(WRONG_CONNECTION);
@@ -101,6 +103,7 @@ public class DBConnectWindow extends JFrame {
                 logger.log(Level.WARNING, "an I/O error occurred", e);
             }
         }
+        new MainWindow(requester);
         setVisible(false);
     }
 
