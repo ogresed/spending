@@ -1,6 +1,5 @@
 package dbConnectWindow;
 
-import com.mysql.cj.jdbc.exceptions.MySQLStatementCancelledException;
 import dbConnectWindow.nfield.NPasswordField;
 import dbConnectWindow.nfield.NTextField;
 import mainWindow.baseFrame.MonitorSizes;
@@ -8,16 +7,22 @@ import mainWindow.baseFrame.StatusBar;
 import requester.Requester;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.io.*;
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.Properties;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 public class DBConnectWindow extends JFrame {
-    private static final String WRONG_CONNECTION = "Database access error";
-    private static final String PATH_OF_SETTINGS = "settings";
+    private static final String WRONG_CONNECTION = "failed connect to db";
+    private static final String PATH_OF_SETTINGS = "users/user_settings";
+    private HashSet<String> urlSet = new HashSet<>();
+    private HashSet<String> userSet = new HashSet<>();
+    private HashSet<String> encodingSet = new HashSet<>();
     private File settingFile;
     private NTextField URLPanel = new NTextField("URL");
     private NTextField userPanel = new NTextField("user");
@@ -25,6 +30,18 @@ public class DBConnectWindow extends JFrame {
     private NTextField encodingPanel = new NTextField("encoding");
     private JPanel connectPanel;
     private StatusBar statusBar;
+    private static final String LOGGING_FILE_NAME = "control/log.properties";
+    private static Logger logger;
+
+    static {
+        try(FileInputStream inputStream = new FileInputStream(LOGGING_FILE_NAME)) {
+            LogManager.getLogManager().readConfiguration(inputStream);
+            logger = Logger.getLogger(DBConnectWindow.class.getName());
+        } catch (IOException e) {
+            System.err.println("Impossible to open logging config file");
+            System.exit(0);
+        }
+    }
 
     public DBConnectWindow() {
         setBaseSettings();
@@ -34,40 +51,16 @@ public class DBConnectWindow extends JFrame {
         revalidate();
     }
 
-    private void loadSettingsIfItExist() {
-        settingFile = new File(PATH_OF_SETTINGS);
-        if(!settingFile.exists()) {
-            try {
-                settingFile.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return;
-        } else {
-            loadSettingsFromFile(settingFile);
-        }
-    }
-
-    private void loadSettingsFromFile(File settingFile) {
-        try {
-            Scanner scanner = new Scanner(new FileInputStream(settingFile));
-            String string = scanner.nextLine();
-            String[] parts = string.split(" ");
-            URLPanel.setText(parts[0]);
-            userPanel.setText(parts[1]);
-            encodingPanel.setText(parts[2]);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void addComponents() {
-        add(URLPanel);
-        add(userPanel);
-        add(passwordPanel);
-        add(encodingPanel);
-        add(connectPanel);
-        //add(statusBar);
+    private void setBaseSettings() {
+        setLayout(new GridLayout(5, 1));
+        setVisible(true);
+        setResizable(false);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        int startWidth = (MonitorSizes.WIDTH_OF_MONITOR) / 4;
+        int startHeight = 3 * (MonitorSizes.HEIGHT_OF_MONITOR) / 5;
+        setBounds((MonitorSizes.WIDTH_OF_MONITOR - startWidth)/2,
+                (MonitorSizes.HEIGHT_OF_MONITOR - startHeight)/2,
+                startWidth, startHeight);
     }
 
     private void createComponents() {
@@ -76,52 +69,104 @@ public class DBConnectWindow extends JFrame {
         passwordPanel = new NPasswordField("password");
         encodingPanel = new NTextField("encoding");
         JButton connectButton = new JButton("Connect");
-        connectButton.addActionListener(e -> {
-            DataWrapper data = getSettings();
-            try {
-                Requester requester = new Requester(data.getURL(), data.getProperties());
-            } catch (SQLException ex) {
-                statusBar.setMessage(WRONG_CONNECTION);
-                 return;
-            }
 
-            try {
-                PrintWriter writer = new PrintWriter(settingFile);
-                writer.write(createSettingsString());
-                writer.close();
-            } catch (FileNotFoundException ex) {
-                ex.printStackTrace();
-            }
-            setVisible(false);
-        });
-        connectPanel = new JPanel();
-        connectPanel.setLayout(new GridLayout(2, 1));
+        connectButton.addActionListener(e -> toClickOnConnectBonnet());
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(connectButton);
         statusBar = new StatusBar(100, 16);
+
+        connectPanel = new JPanel();
+        connectPanel.setLayout(new GridLayout(2, 1));
         connectPanel.add(buttonPanel, BorderLayout.NORTH);
         connectPanel.add(statusBar, BorderLayout.SOUTH);
     }
 
-    private String createSettingsString() {
-        return URLPanel.getText() + " "+ userPanel.getText() + " " + encodingPanel.getText();
+    private void toClickOnConnectBonnet() {
+        DataWrapper<Properties, String> data = getSettings();
+        try {
+            new Requester(data.getSecondObject(), data.getFirstObject());
+        } catch (SQLException ex) {
+            logger.log(Level.WARNING, "Database access error", ex);
+            statusBar.setMessage(WRONG_CONNECTION);
+            return;
+        }
+        String newRecord = createSettingsStringIfItIsNew();
+        if(newRecord != null) {
+            try {
+                FileWriter writer = new FileWriter(settingFile, true);
+                BufferedWriter bufferWriter = new BufferedWriter(writer);
+                bufferWriter.write(newRecord);
+                bufferWriter.close();
+            } catch (IOException e) {
+                logger.log(Level.WARNING, "an I/O error occurred", e);
+            }
+        }
+        setVisible(false);
     }
 
-    private DataWrapper getSettings() {
+    private void loadSettingsIfItExist() {
+        settingFile = new File(PATH_OF_SETTINGS);
+        if(!settingFile.exists()) {
+            try {
+                boolean created = settingFile.createNewFile();
+                if (!created) {
+                    logger.log(Level.WARNING, "failed to create a file " +
+                            "with will store a records of settings of users");
+                }
+            } catch (IOException e) {
+                logger.log(Level.WARNING, "an I/O error occurred", e);
+            }
+        } else {
+            loadSettingsFromFile(settingFile);
+        }
+    }
+
+    private void loadSettingsFromFile(File settingFile) {
+        try {
+            Scanner scanner = new Scanner(new FileInputStream(settingFile));
+            urlSet = new HashSet<>();
+            userSet = new HashSet<>();
+            encodingSet = new HashSet<>();
+            while (scanner.hasNext()) {
+                String record = scanner.nextLine();
+                String[] separatedRecord = record.split("-");
+                String connectingInfo = separatedRecord[0];
+                String[] separatedConnInfo = connectingInfo.split(" ");
+                urlSet.add(separatedConnInfo[0]);
+                userSet.add(separatedConnInfo[1]);
+                encodingSet.add(separatedConnInfo[2]);
+            }
+            URLPanel.addItems(urlSet);
+            userPanel.addItems(userSet);
+            encodingPanel.addItems(encodingSet);
+        } catch (FileNotFoundException e) {
+            logger.log(Level.WARNING, "File with users settings not found", e);
+        }
+    }
+
+    private DataWrapper<Properties, String> getSettings() {
         Properties properties = new Properties();
         properties.setProperty("user", userPanel.getText());
         properties.setProperty("characterEncoding", encodingPanel.getText());
         properties.setProperty("password", (passwordPanel.getText()));
-        return new DataWrapper(properties, URLPanel.getText());
+        return new DataWrapper<>(properties, URLPanel.getText());
     }
 
-    private void setBaseSettings() {
-        setLayout(new GridLayout(5, 1));
-        setVisible(true);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        int startWidth = (MonitorSizes.WIDTH_OF_MONITOR) / 4;
-        int startHeight = 3 * (MonitorSizes.HEIGHT_OF_MONITOR) / 5;
-        setBounds((MonitorSizes.WIDTH_OF_MONITOR - startWidth)/2, (MonitorSizes.HEIGHT_OF_MONITOR - startHeight)/2,
-                startWidth, startHeight);
+    private String createSettingsStringIfItIsNew() {
+        String url = URLPanel.getText() ;
+        String user = userPanel.getText();
+        String encoding = encodingPanel.getText();
+        if(urlSet.add(url) || userSet.add(user)) {
+            return url + " " + user + " " + encoding;
+        } else
+            return null;
+    }
+
+    private void addComponents() {
+        add(URLPanel);
+        add(userPanel);
+        add(passwordPanel);
+        add(encodingPanel);
+        add(connectPanel);
     }
 }
