@@ -82,11 +82,10 @@ public class DBConnectWindow extends JFrame implements LoggingConst {
     }
 
     private void toClickOnConnectButton() {
-        DataWrapper<Properties, String> data = getSettings();
+        var data = getSettings();
         Requester requester;
         try {
             requester = new Requester(data.getSecondObject(), data.getFirstObject());
-
         } catch (SQLException ex) {
             logger.log(Level.WARNING, "Database access error", ex);
             statusBar.setMessage(WRONG_CONNECTION);
@@ -95,8 +94,8 @@ public class DBConnectWindow extends JFrame implements LoggingConst {
         String newRecord = createSettingsStringIfItIsNew();
         if(newRecord != null) {
             try {
-                FileWriter writer = new FileWriter(settingFile, true);
-                BufferedWriter bufferWriter = new BufferedWriter(writer);
+                var writer = new FileWriter(settingFile, true);
+                var bufferWriter = new BufferedWriter(writer);
                 bufferWriter.write(newRecord);
                 bufferWriter.close();
             } catch (IOException e) {

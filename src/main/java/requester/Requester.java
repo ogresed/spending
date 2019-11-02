@@ -1,5 +1,6 @@
 package requester;
 
+import dbConnectWindow.DataWrapper;
 import logging.LoggingConst;
 
 import java.io.FileInputStream;
@@ -75,7 +76,7 @@ public class Requester implements LoggingConst {
         try {
             return stmt.executeQuery(query);
         } catch (SQLException e) {
-            System.out.println("Database `access error");
+            System.out.println("Database access error");
         }
         return null;
     }
