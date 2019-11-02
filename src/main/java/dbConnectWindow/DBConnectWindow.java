@@ -2,7 +2,6 @@ package dbConnectWindow;
 
 import dbConnectWindow.nfield.NPasswordField;
 import dbConnectWindow.nfield.NTextField;
-import logging.LoggingConst;
 import mainWindow.MainWindow;
 import mainWindow.baseFrame.MonitorSizes;
 import mainWindow.baseFrame.StatusBar;
@@ -16,10 +15,11 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 
-public class DBConnectWindow extends JFrame implements LoggingConst {
+import static logging.MyLogger.WRONG_CONNECTION;
+import static logging.MyLogger.logger;
+
+public class DBConnectWindow extends JFrame {
     private static final String PATH_OF_SETTINGS = "users/user_settings";
     private HashSet<String> urlSet = new HashSet<>();
     private HashSet<String> userSet = new HashSet<>();
@@ -31,17 +31,6 @@ public class DBConnectWindow extends JFrame implements LoggingConst {
     private NTextField encodingPanel = new NTextField("encoding");
     private JPanel connectPanel;
     private StatusBar statusBar;
-    private static Logger logger;
-
-    static {
-        try(FileInputStream inputStream = new FileInputStream(LOGGING_FILE_NAME)) {
-            LogManager.getLogManager().readConfiguration(inputStream);
-            logger = Logger.getLogger(DBConnectWindow.class.getName());
-        } catch (IOException e) {
-            System.err.println("Impossible to open logging config file");
-            System.exit(0);
-        }
-    }
 
     public DBConnectWindow() {
         setBaseSettings();

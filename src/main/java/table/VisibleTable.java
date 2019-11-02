@@ -1,39 +1,26 @@
 package table;
 
-import logging.LoggingConst;
 import mainWindow.baseFrame.StatusBar;
 import requester.Requester;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 
-public class VisibleTable extends JPanel implements LoggingConst {
+import static logging.MyLogger.WRONG_CONNECTION;
+import static logging.MyLogger.logger;
+
+public class VisibleTable extends JPanel {
     public static Requester requester;
     public StatusBar bar;
     private JScrollPane pane;
     private String nameOfTable;
     private ArrayList<String> attrs;
     private Vector<Vector<String>> data;
-    private static Logger logger;
     private String query;
-
-    static {
-        try(FileInputStream inputStream = new FileInputStream(LOGGING_FILE_NAME)) {
-            LogManager.getLogManager().readConfiguration(inputStream);
-            logger = Logger.getLogger(VisibleTable.class.getName());
-        } catch (IOException e) {
-            System.err.println("Impossible to open logging config file");
-            System.exit(0);
-        }
-    }
 
     public VisibleTable(String nameOfTable, ArrayList<String> attrs) {
         this.nameOfTable = nameOfTable;

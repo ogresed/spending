@@ -1,34 +1,19 @@
 package requester;
 
-import dbConnectWindow.DataWrapper;
-import logging.LoggingConst;
-
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 
-public class Requester implements LoggingConst {
+import static logging.MyLogger.WRONG_CONNECTION;
+import static logging.MyLogger.logger;
+
+public class Requester {
     private static Statement stmt;
     private Connection con;
     private String URL;
     private Properties properties;
-    private static Logger logger;
-
-    static {
-        try(FileInputStream inputStream = new FileInputStream(LOGGING_FILE_NAME)) {
-            LogManager.getLogManager().readConfiguration(inputStream);
-            logger = Logger.getLogger(Requester.class.getName());
-        } catch (IOException e) {
-            System.err.println("Impossible to open logging config file");
-            System.exit(0);
-        }
-    }
 
     public Requester (String URL, Properties properties) throws SQLException {
         this.URL = URL;
@@ -58,7 +43,7 @@ public class Requester implements LoggingConst {
                 retMap.put(nameOfTable, arrayListTmp);
             }
         } catch (SQLException e) {
-            logger.log(Level.WARNING, LoggingConst.WRONG_CONNECTION, e);
+            logger.log(Level.WARNING, WRONG_CONNECTION, e);
             return null;
         }
         return retMap;
