@@ -2,7 +2,7 @@ package mainWindow;
 
 import mainWindow.baseFrame.*;
 import requester.Requester;
-import table.VisibleTable2;
+import table.VisibleTable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Vector;
 
 public class MainWindow extends BaseFrame {
-    private HashMap<String, VisibleTable2> tables = new HashMap<>();
+    private HashMap<String, VisibleTable> tables = new HashMap<>();
     private JPanel tablesListPanel = new JPanel();
     private JList<String> tablesList;
     private JPanel mainPanel;
@@ -26,7 +26,7 @@ public class MainWindow extends BaseFrame {
         createButtons();
 
         var tablesAndAttributes =  requester.getMeta();
-        VisibleTable2.requester = requester;
+        VisibleTable.requester = requester;
         mainPanel = new JPanel(new CardLayout());
         Vector<String> names = createTables(tablesAndAttributes);
         tablesList = new JList<>(names);
@@ -50,7 +50,7 @@ public class MainWindow extends BaseFrame {
         Vector<String> names = new Vector<>();
         tablesAndAttributes.forEach((key, value) -> {
             if(Character.isUpperCase( key.charAt(0))) {
-                var table = new VisibleTable2(key, value);
+                var table = new VisibleTable(key, value);
                 mainPanel.add(table, key);
                 tables.put(key, table);
                 names.add(key);
