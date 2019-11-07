@@ -1,5 +1,7 @@
 package requester;
 
+import logging.MyLogger;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +26,11 @@ public class Requester {
         stmt = con.createStatement();
         stmt.executeQuery("describe spending;");
     }
-
+/**
+ * return a map where
+ * name of table is key and
+ * list of attributes is values
+ * */
     public HashMap<String, ArrayList<String>> getMeta() {
         var retMap = new HashMap<String, ArrayList<String>>();
         try {
@@ -61,7 +67,7 @@ public class Requester {
         try {
             return stmt.executeQuery(query);
         } catch (SQLException e) {
-            System.out.println("Database access error");
+            logger.log(Level.WARNING, e.getMessage(), "Database access error");
         }
         return null;
     }

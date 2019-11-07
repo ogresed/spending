@@ -9,6 +9,8 @@ import requester.Requester;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.*;
 import java.sql.SQLException;
 import java.util.HashSet;
@@ -58,11 +60,18 @@ public class DBConnectWindow extends JFrame {
         passwordPanel = new NPasswordField("password");
         encodingPanel = new NTextField("encoding");
         JButton connectButton = new JButton("Connect");
+        connectButton.doClick();
 
         connectButton.addActionListener(e -> toClickOnConnectButton());
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(connectButton);
         statusBar = new StatusBar(100, 16);
+
+        passwordPanel.addButtonTypedListener( e -> {
+            if(e.getKeyChar() == KeyEvent.VK_ENTER) {
+                toClickOnConnectButton();
+            }
+        });
 
         connectPanel = new JPanel();
         connectPanel.setLayout(new GridLayout(2, 1));
