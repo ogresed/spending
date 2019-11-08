@@ -5,10 +5,10 @@ public class Date {
     private int day;
     private int month;
 
-    Date(long year, int day, int month) {
+    Date(long year, int month, int day) {
         this.year = year;
-        this.day = day;
         this.month = month;
+        this.day = day;
     }
     public long getYear() {
         return year;

@@ -1,4 +1,6 @@
-package table;
+package table.unresolved;
+
+import table.unresolved.Attribute;
 
 public class MyTable {
     private final String name;

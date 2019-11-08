@@ -1,6 +1,6 @@
 package table.component.datePanel;
 
-import table.component.Fenced;
+import table.component.Field;
 
 import javax.swing.*;
 import java.time.MonthDay;
@@ -8,12 +8,9 @@ import java.time.YearMonth;
 import java.util.Vector;
 
 import static java.time.Year.isLeap;
+import static table.component.ComponentType.DATE;
 
-public class DatePanel extends Fenced {
-    /**
-     * modes
-     * */
-    public static final int SET_CURRENT_DATE = 1;
+public class DatePanel extends Field {
 
     private static final String[] month = {
              "Январь", "Февраль", "Март", "Апрель",
@@ -34,16 +31,25 @@ public class DatePanel extends Fenced {
     private JComboBox<String> monthsBox;
     private JComboBox<Integer> daysBox;
 
-    public DatePanel(String name, int option, int mode) {
+    public enum Option {
+        All, MonthAndYear
+    }
+
+    public enum Mode {
+        SET_CURRENT_DATE
+    }
+
+    public DatePanel(String name, Option option, Mode mode) {
         super(name);
+        TYPE = DATE;
         yearsMonthInitialization(mode);
 
-        if(option == ALL) {
+        if(option == Option.All) {
             daysInitialization(mode);
         }
     }
 
-    private void daysInitialization(int mode) {
+    private void daysInitialization(Mode mode) {
         monthsBox.addActionListener(e -> {
             for(int i = days.size() - 28; i > 0; i--) {
                 days.remove(28 + i - 1);
@@ -64,33 +70,34 @@ public class DatePanel extends Fenced {
         for(day = 0; day < 31; day++) {
             days.add(day+1);
         }
-        if(mode == SET_CURRENT_DATE) {
+        if(mode == Mode.SET_CURRENT_DATE) {
             daysBox.setSelectedIndex(MonthDay.now().getDayOfMonth() - 1);
         }
     }
 
-    private void yearsMonthInitialization (int mode) {
+    private void yearsMonthInitialization (Mode mode) {
         yearsBox = new JComboBox<>(years);
         monthsBox = new JComboBox<>(month);
         add(yearsBox);
         add(monthsBox);
-        if(mode == SET_CURRENT_DATE) {
+        if(mode == Mode.SET_CURRENT_DATE) {
             var now = YearMonth.now();
             yearsBox.setSelectedIndex(now.getYear() - BEGIN_YEAR);
             monthsBox.setSelectedIndex(now.getMonthValue() - 1);
         }
     }
+    @Override
+    protected String getValue() {
+        return "'"+getDate().toString()+"'";
+    }
 
-    public Date getDate () {
+    private Date getDate() {
         return new Date (
                 years[yearsBox.getSelectedIndex()],
-                days.get(daysBox.getSelectedIndex()),
-                monthsBox.getSelectedIndex()
+                monthsBox.getSelectedIndex(),
+                days.get(daysBox.getSelectedIndex())
                 );
     }
-    //Creating options
-    public final static int ALL = 0;
-    public final static int MONTH_AND_YEAR = 1;
 
     public long getYear() {
         return years[yearsBox.getSelectedIndex()];

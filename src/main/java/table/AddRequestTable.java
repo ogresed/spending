@@ -1,14 +1,27 @@
 package table;
 
+import table.component.Field;
+import table.options.AddFrame;
+
+import javax.swing.*;
+
 public class AddRequestTable extends BaseTable {
     private String attributes = "";
     private String condition =  "";
     private String groupBy = "";
     private String orderBy = "";
+    private AddFrame selectFrame;
 
     public AddRequestTable(String nameOfTable) {
         super(nameOfTable);
         this.nameOfTable = nameOfTable;
+        selectFrame = new AddFrame();
+
+    }
+
+    public void addSelectableAttribute(Field field) {
+        selectFrame.addField(field);
+        selectFrame.centralize();
     }
 
     @Override
@@ -50,5 +63,9 @@ public class AddRequestTable extends BaseTable {
     public AddRequestTable fromGetAllAttributes() {
         attributes = "*";
         return this;
+    }
+    @Override
+    public JFrame getSelectedWindow() {
+        return selectFrame;
     }
 }

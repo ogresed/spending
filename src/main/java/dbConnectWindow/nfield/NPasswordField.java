@@ -1,12 +1,10 @@
 package dbConnectWindow.nfield;
 
-import table.component.Fenced;
-
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-public class NPasswordField extends Fenced implements NField {
+public class NPasswordField extends Field implements NField {
     private JPasswordField passwordField;
 
     public NPasswordField (String title) {

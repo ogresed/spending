@@ -1,5 +1,5 @@
 package load;
-import table.MyTable;
+import table.unresolved.MyTable;
 
 import java.io.File;
 import java.io.FileNotFoundException;

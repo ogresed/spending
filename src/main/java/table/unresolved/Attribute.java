@@ -1,4 +1,4 @@
-package table;
+package table.unresolved;
 
 public class Attribute {
     private String strVal;

@@ -1,7 +1,5 @@
 package logging;
 
-import table.VisibleTable;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.logging.LogManager;

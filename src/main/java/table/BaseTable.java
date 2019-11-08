@@ -94,4 +94,6 @@ public abstract class BaseTable extends JPanel {
     }
 
     public abstract String createStringQuery();
+
+    public abstract JFrame getSelectedWindow();
 }

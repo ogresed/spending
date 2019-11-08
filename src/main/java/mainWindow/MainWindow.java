@@ -5,6 +5,10 @@ import requester.Requester;
 import table.AddRequestTable;
 import table.BaseTable;
 import table.VisibleTable;
+import table.component.CLabel;
+import table.component.CList;
+import table.component.NumberCLabel;
+import table.component.datePanel.DatePanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,6 +20,8 @@ import java.util.logging.Level;
 
 import static logging.MyLogger.WRONG_CONNECTION;
 import static logging.MyLogger.logger;
+import static table.component.datePanel.DatePanel.Mode.SET_CURRENT_DATE;
+import static table.component.datePanel.DatePanel.Option.All;
 
 public class MainWindow extends BaseFrame {
     private HashMap<String, BaseTable> tables = new HashMap<>();
@@ -23,6 +29,7 @@ public class MainWindow extends BaseFrame {
     private JList<String> tablesList;
     private JPanel mainPanel;
     private Vector<String> names;
+    private JFrame selectWindow;
 
     public MainWindow(Requester requester) {
         //set base options
@@ -56,17 +63,17 @@ public class MainWindow extends BaseFrame {
     private void setupTablesList() {
         tablesList.addListSelectionListener(e-> {
             var selected = tablesList.getSelectedValue();
-            tables.get(selected).setValues();
+            var table = tables.get(selected);
+            table.setValues();
             ((CardLayout)mainPanel
                     .getLayout())
                     .show(mainPanel, selected);
-            /*revalidate();
-            mainPanel.revalidate();*/
+            selectWindow = table.getSelectedWindow();
         });
     }
 
     private Vector<String>  createTables(HashMap<String, ArrayList<String>> tablesAndAttributes) {
-        Vector<String> names = new Vector<>();
+        var names = new Vector<String>();
         tablesAndAttributes.forEach((key, value) -> {
             if(Character.isUpperCase( key.charAt(0))) {
                 var table = new VisibleTable(key, value);
@@ -75,7 +82,7 @@ public class MainWindow extends BaseFrame {
                 names.add(key);
             }
         });
-        String selectableTable = names.get(0);
+        var selectableTable = names.get(0);
         tables.get(selectableTable).setValues();
         return names;
     }
@@ -84,15 +91,15 @@ public class MainWindow extends BaseFrame {
      * add tables name to names
      * */
     private void createAddRequestTables() {
-        String spending = "spending";
-        AddRequestTable spendingTable = new AddRequestTable(spending).
+        var spending = "spending";
+        var spendingTable = new AddRequestTable(spending).
                 fromGetAllAttributes().
                 orderByASC("Date");
         adding(spending, spendingTable);
         spendingTable.setOutputToStatusBarOnSelectQuery(() -> {
-            String ret = "Всего потрачено: ";
-            String sum = "";
-            String query =
+            var ret = "Всего потрачено: ";
+            var sum = "";
+            var query =
                     "select sum(cost) sum from spending;";
             var set = BaseTable.requester.getRecords(query);
             if(set.next()) {
@@ -101,6 +108,13 @@ public class MainWindow extends BaseFrame {
             }
             return ret;
         });
+        spendingTable.addSelectableAttribute(new CLabel("Описание"));
+        spendingTable.addSelectableAttribute(new NumberCLabel("Стоимость"));
+        String[] types = {
+                "еда", "вещи", "развлечения", "другое", "проезд", "услуги", "продукты"
+        };
+        spendingTable.addSelectableAttribute(new CList("Тип", types));
+        spendingTable.addSelectableAttribute(new DatePanel("Дата", All, SET_CURRENT_DATE));
     }
 
     private void adding(String nameOfTable, AddRequestTable table) {
@@ -111,22 +125,28 @@ public class MainWindow extends BaseFrame {
 
     @Override
     protected void createButtons() {
-        JMenu fileMenu = makeMenu("Файл", 'F');
+        var fileMenu = makeMenu("Файл", 'F');
         createAction(fileMenu, "Выход", e->System.exit(0),'E',"Выход из приложения");
         addSeparator();
-        JMenu usageMenu = makeMenu("Использование", 'U');
-        createAction(usageMenu, "Добавить", e -> {},'A',"Добавить запись");
+        var usageMenu = makeMenu("Использование", 'U');
+        createAction(usageMenu, "Добавить", e -> onSelect(),'A',"Добавить запись");
         createAction(usageMenu, "Запрос", e-> {},'R',"Сделать запрос");
     }
 
+    private void onSelect() {
+        try {
+            selectWindow.setVisible(true);
+        } catch (NullPointerException ignore) {}
+    }
+
     private void setupSimpleTables() {
-        String tablesName = "MoneyPerDay";
+        var tablesName = "MoneyPerDay";
         var table = tables.get(tablesName);
         table.setOutputToStatusBarOnSelectQuery(() -> {
-            String ret = "В среднем тратил за день: ";
-            String sumStr = "";
+            var ret = "В среднем тратил за день: ";
+            var sumStr = "";
             try {
-                String query =
+                var query =
                         "select avg(sum) sum from MoneyPerDay;";
                 var set = BaseTable.requester.getRecords(query);
                 if(set.next()) {

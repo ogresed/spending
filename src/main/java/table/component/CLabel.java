@@ -2,15 +2,22 @@ package table.component;
 
 import javax.swing.*;
 
-public class CLabel extends Fenced {
-    private JTextArea space;
+import static table.component.ComponentType.TEXT;
+
+public class CLabel extends Field {
+    JTextArea space;
 
     public CLabel(String name) {
         super(name);
-        space = new JTextArea();
-    }
+        TYPE = TEXT;
+        space = new JTextArea(1,14);
+        add(space);
 
-    public String getString() {
-        return space.getText();
+        space.setLineWrap(true);
+        space.setWrapStyleWord(true);
+    }
+    @Override
+    public String getValue() {
+        return "'" + space.getText() + "'";
     }
 }

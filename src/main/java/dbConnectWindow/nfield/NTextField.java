@@ -1,12 +1,10 @@
 package dbConnectWindow.nfield;
 
-import table.component.Fenced;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.HashSet;
 
-public class NTextField extends Fenced implements NField {
+public class NTextField extends Field implements NField {
     private JTextField textField;
     private JComboBox<String> variants;
 

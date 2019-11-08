@@ -1,5 +1,6 @@
 package table;
 
+import javax.swing.*;
 import java.util.ArrayList;
 
 public class VisibleTable extends BaseTable {
@@ -12,5 +13,10 @@ public class VisibleTable extends BaseTable {
     @Override
     public String createStringQuery() {
         return query;
+    }
+
+    @Override
+    public JFrame getSelectedWindow() {
+        return null;
     }
 }
