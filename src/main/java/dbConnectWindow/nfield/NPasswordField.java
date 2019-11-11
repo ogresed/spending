@@ -1,6 +1,7 @@
 package dbConnectWindow.nfield;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -9,7 +10,8 @@ public class NPasswordField extends Field implements NField {
 
     public NPasswordField (String title) {
         super(title);
-        passwordField = new JPasswordField(14);
+        setLayout(new GridLayout(1,1));
+        passwordField = new JPasswordField();
         add(passwordField);
     }
 

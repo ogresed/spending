@@ -1,14 +1,14 @@
 package table.component;
 
 import javax.swing.*;
-import java.awt.*;
 
 public abstract class Field extends JPanel {
     protected ComponentType TYPE;
     public Field(String name) {
-        setLayout(new GridLayout(1, 2));
-        add(new JLabel(name));
+        //setLayout(new GridLayout(1, 2));
+        setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+        add(new JLabel(name + "    "));
     }
 
-    protected abstract String getValue ();
+    public abstract String getValue();
 }

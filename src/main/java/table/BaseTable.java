@@ -21,21 +21,20 @@ public abstract class BaseTable extends JPanel {
     private ArrayList<String> attrs;
     private Vector<Vector<String>> data;
     private OutputMessage outputMessage;
-    protected String query;
+    String query;
 
     BaseTable (String nameOfTable) {
-        this.nameOfTable = nameOfTable;
         attrs = requester.getMeta().get(nameOfTable);
-        baseConstructor();
+        baseConstructor(nameOfTable);
     }
 
     BaseTable (String nameOfTable, ArrayList<String> attrs) {
-        this.nameOfTable = nameOfTable;
         this.attrs = attrs;
-        baseConstructor();
+        baseConstructor(nameOfTable);
     }
 
-    private void baseConstructor() {
+    private void baseConstructor(String nameOfTable) {
+        this.nameOfTable = nameOfTable;
         setLayout(new BorderLayout());
 
         Vector<String> header = new Vector<>(attrs);
@@ -91,6 +90,10 @@ public abstract class BaseTable extends JPanel {
 
     public void setOutputToStatusBarOnSelectQuery(OutputMessage outputMessage) {
         this.outputMessage = outputMessage;
+    }
+
+    public String getNameOfTable() {
+        return nameOfTable;
     }
 
     public abstract String createStringQuery();

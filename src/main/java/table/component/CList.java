@@ -17,7 +17,7 @@ public class CList extends Field {
     }
     @Override
     public String getValue() {
-        return  names[box.getSelectedIndex()];
+        return  "'" + names[box.getSelectedIndex()] + "'";
     }
 
     public int getSelectedIndex() {

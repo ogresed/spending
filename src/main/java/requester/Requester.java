@@ -55,11 +55,11 @@ public class Requester {
         return retMap;
     }
 
-    private void insert(String insertQuery) {
+    public void insert(String insertQuery) {
         try {
             stmt.executeUpdate(insertQuery);
         } catch (SQLException e) {
-            System.out.println("Database access error");
+            logger.log(Level.WARNING, e.getMessage(), "Database access error");
         }
     }
 

@@ -87,7 +87,7 @@ public class DatePanel extends Field {
         }
     }
     @Override
-    protected String getValue() {
+    public String getValue() {
         return "'"+getDate().toString()+"'";
     }
 

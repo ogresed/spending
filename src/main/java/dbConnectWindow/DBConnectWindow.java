@@ -43,7 +43,8 @@ public class DBConnectWindow extends JFrame {
     }
 
     private void setBaseSettings() {
-        setLayout(new GridLayout(5, 1));
+        //setLayout(new GridLayout(5, 1));
+        getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
         setVisible(true);
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -167,6 +168,7 @@ public class DBConnectWindow extends JFrame {
         add(userPanel);
         add(passwordPanel);
         add(encodingPanel);
+        add(connectPanel);
         add(connectPanel);
     }
 }

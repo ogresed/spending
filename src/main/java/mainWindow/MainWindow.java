@@ -5,9 +5,9 @@ import requester.Requester;
 import table.AddRequestTable;
 import table.BaseTable;
 import table.VisibleTable;
-import table.component.CLabel;
+import table.component.CTextField;
 import table.component.CList;
-import table.component.NumberCLabel;
+import table.component.NumberCField;
 import table.component.datePanel.DatePanel;
 
 import javax.swing.*;
@@ -86,11 +86,18 @@ public class MainWindow extends BaseFrame {
         tables.get(selectableTable).setValues();
         return names;
     }
+
+    private void adding(String nameOfTable, AddRequestTable table) {
+        mainPanel.add(table, nameOfTable);
+        tables.put(nameOfTable, table);
+        names.add(nameOfTable);
+    }
     /**
      * add AddRequestTables to mainPanel and to tables
      * add tables name to names
      * */
     private void createAddRequestTables() {
+            //creating spending table
         var spending = "spending";
         var spendingTable = new AddRequestTable(spending).
                 fromGetAllAttributes().
@@ -108,21 +115,15 @@ public class MainWindow extends BaseFrame {
             }
             return ret;
         });
-        spendingTable.addSelectableAttribute(new CLabel("Описание"));
-        spendingTable.addSelectableAttribute(new NumberCLabel("Стоимость"));
+        spendingTable.addSelectableAttribute(new CTextField("Описание"));
+        spendingTable.addSelectableAttribute(new NumberCField("Стоимость"));
         String[] types = {
                 "еда", "вещи", "развлечения", "другое", "проезд", "услуги", "продукты"
         };
         spendingTable.addSelectableAttribute(new CList("Тип", types));
         spendingTable.addSelectableAttribute(new DatePanel("Дата", All, SET_CURRENT_DATE));
+            //end of creating spending
     }
-
-    private void adding(String nameOfTable, AddRequestTable table) {
-        mainPanel.add(table, nameOfTable);
-        tables.put(nameOfTable, table);
-        names.add(nameOfTable);
-    }
-
     @Override
     protected void createButtons() {
         var fileMenu = makeMenu("Файл", 'F');

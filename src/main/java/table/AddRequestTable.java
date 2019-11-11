@@ -15,7 +15,7 @@ public class AddRequestTable extends BaseTable {
     public AddRequestTable(String nameOfTable) {
         super(nameOfTable);
         this.nameOfTable = nameOfTable;
-        selectFrame = new AddFrame();
+        selectFrame = new AddFrame(this);
 
     }
 
@@ -67,5 +67,10 @@ public class AddRequestTable extends BaseTable {
     @Override
     public JFrame getSelectedWindow() {
         return selectFrame;
+    }
+
+    public void select(String insertQuery) {
+        requester.insert(insertQuery);
+        System.out.println(insertQuery);
     }
 }

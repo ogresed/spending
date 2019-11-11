@@ -3,9 +3,9 @@ package table.component;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-public class NumberCLabel extends CLabel {
-    public NumberCLabel(String name) {
-        super(name);
+public class NumberCField extends CTextField {
+    public NumberCField(String name) {
+        super(name, 1);
         space.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
