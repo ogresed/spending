@@ -22,7 +22,7 @@ import static logging.MyLogger.WRONG_CONNECTION;
 import static logging.MyLogger.logger;
 
 public class DBConnectWindow extends JFrame {
-    private static final String PATH_OF_SETTINGS = "users/user_settings";
+    private static final String PATH_OF_SETTINGS = "user_settings";
     private HashSet<String> urlSet = new HashSet<>();
     private HashSet<String> userSet = new HashSet<>();
     private HashSet<String> encodingSet = new HashSet<>();

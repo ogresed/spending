@@ -12,8 +12,10 @@ public class MyLogger {
     public static Logger logger;
 
     static {
-        try(FileInputStream inputStream = new FileInputStream(LOGGING_FILE_NAME)) {
-            LogManager.getLogManager().readConfiguration(inputStream);
+        try
+//                (FileInputStream inputStream = new FileInputStream(LOGGING_FILE_NAME))
+        {
+            LogManager.getLogManager().readConfiguration();
             logger = Logger.getLogger(MyLogger.class.getName());
         } catch (IOException e) {
             System.err.println("Impossible to open logging config file");
